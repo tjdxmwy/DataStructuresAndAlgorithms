@@ -6,6 +6,14 @@ package com.horse.ch03.LinkedList;
  * @Date 2021/2/20
  */
 public class Josepfu {
+    public static void main(String[] args) {
+        // 测试一把看看构建环形链表，和遍历是否ok
+        CircleSingleLinkedList circleSingleLinkedList = new CircleSingleLinkedList();
+        circleSingleLinkedList.addBoy(5);
+        circleSingleLinkedList.show();
+
+        circleSingleLinkedList.countBoy(1,2,5); //2->4->1->5->3
+    }
 }
 
 // 创建一个环形的单向链表
@@ -22,7 +30,7 @@ class CircleSingleLinkedList {
 
         //辅助指针
         Boy curBoy = null;
-        for(int i = 1; i < num; i++) {
+        for(int i = 1; i <= num; i++) {
             Boy boy = new Boy(i);
             // 如果是第一个小孩
             if(i == 1) {
@@ -48,12 +56,65 @@ class CircleSingleLinkedList {
         // 因为first不能动，因此我们仍然使用一个辅助指针完成遍历
         Boy curBoy = first;
         while(true) {
+            System.out.printf("小孩的编号 %d \n", curBoy.id);
             if(curBoy.next == first) {
                 break;
             }
-            System.out.printf("小孩的编号 %d \n", curBoy.id);
+
             curBoy = curBoy.next;
         }
+    }
+
+    /**
+     * 根据用户的输入，计算出小孩出圈的顺序
+     * @param startNo
+     *      表示从第几个孩子开始数数
+     * @param countNum
+     *      表示数几下
+     * @param nums
+     *      一共有多少个小孩
+     */
+    public void countBoy(int startNo, int countNum, int nums) {
+        //1.校验
+        if(first == null || startNo < 1 || startNo > nums) {
+            System.out.println("参数输入有误");
+            return;
+        }
+
+        //2.创建要给辅助指针,帮助完成小孩出圈(找出first的前一个节点)
+        Boy helper = first;
+        while(true) {
+            if(helper.next == first) {
+                break;
+            }
+            helper = helper.next;
+        }
+
+        //3.将helper和first同时移动(startNo - 1)次
+        for(int i=0; i < startNo - 1; i++) {
+            first = first.next;
+            helper = helper.next;
+        }
+
+        //4.小孩报数时,将helper和first同时移动(countNum-1)次
+        while(true) {
+            if(helper == first) {
+                break;
+            }
+
+            for(int j = 0; j < countNum - 1; j++) {
+                first = first.next;
+                helper = helper.next;
+            }
+            System.out.printf("出圈的小孩编号: %d ", first.id);
+
+            first = first.next;
+            helper.next = first;
+        }
+
+        System.out.printf("留在圈的小孩编号: %d ", first.id);
+
+
     }
 
 
